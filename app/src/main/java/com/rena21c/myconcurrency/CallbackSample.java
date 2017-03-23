@@ -3,6 +3,8 @@ package com.rena21c.myconcurrency;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * Created by jaehong on 2017. 3. 23..
  */
@@ -24,6 +26,21 @@ public class CallbackSample {
                 });
             }
         }).start();
+    }
+
+    public static void blockingCall(final int delay, final OnFinishListener listener) {
+        final CountDownLatch latch = new CountDownLatch(1);
+        call(delay, new OnFinishListener() {
+            @Override
+            public void onFinish() {
+                latch.countDown();
+                listener.onFinish();
+            }
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+        }
     }
 
 }

@@ -15,10 +15,18 @@ public class MainActivity4 extends AppCompatActivity {
 
         tvOutput = (TextView) findViewById(R.id.tvOutput);
         tvOutput.setText("start" + "\n");
-        CallbackSample.call(3000, new OnFinishListener() {
+
+        CallbackSample.blockingCall(3000, new OnFinishListener() {
             @Override
             public void onFinish() {
-                tvOutput.append("end");
+                tvOutput.append("end1");
+            }
+        });
+
+        CallbackSample.blockingCall(3000, new OnFinishListener() {
+            @Override
+            public void onFinish() {
+                tvOutput.append("end2");
             }
         });
     }
