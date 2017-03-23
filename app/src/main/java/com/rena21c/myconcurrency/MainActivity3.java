@@ -1,11 +1,11 @@
 package com.rena21c.myconcurrency;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity3 extends AppCompatActivity {
 
@@ -16,12 +16,10 @@ public class MainActivity3 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        final Queue<Runnable> queue = new LinkedList<>();
         tvOutput = (TextView) findViewById(R.id.tvOutput);
         appendTextOnUiThread(getClass().getSimpleName() + " >>>>>>>>>>>>");
-
-        queue.add(new Runnable() {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(new Runnable() {
             @Override
             public void run() {
                 ThreadUtil.sleep(1000);
@@ -29,7 +27,7 @@ public class MainActivity3 extends AppCompatActivity {
             }
         });
 
-        queue.add(new Runnable() {
+        executor.submit(new Runnable() {
             @Override
             public void run() {
                 ThreadUtil.sleep(1000);
@@ -37,15 +35,14 @@ public class MainActivity3 extends AppCompatActivity {
             }
         });
 
-        queue.add(new Runnable() {
+        executor.submit(new Runnable() {
             @Override
             public void run() {
                 ThreadUtil.sleep(1000);
                 appendTextOnUiThread("스레드 3 결과뿅");
             }
         });
-
-
+        executor.shutdown();
     }
     private void appendTextOnUiThread(final String s) {
         runOnUiThread(new Runnable() {
