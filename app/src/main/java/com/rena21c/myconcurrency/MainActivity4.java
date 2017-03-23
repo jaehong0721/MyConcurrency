@@ -16,18 +16,45 @@ public class MainActivity4 extends AppCompatActivity {
         tvOutput = (TextView) findViewById(R.id.tvOutput);
         tvOutput.setText("start" + "\n");
 
-        CallbackSample.blockingCall(3000, new OnFinishListener() {
+        new Thread(new Runnable() {
             @Override
-            public void onFinish() {
-                tvOutput.append("end1");
+            public void run() {
+                blocking();
+            }
+        }).start();
+
+        tvOutput.append("end3");
+    }
+
+    private void blocking() {
+
+        BlockingCallbackSample.blockingCall(3000, new CustomOnFinishListener() {
+            @Override
+            public void onFinish2() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        appendTextOnUiThread("End1");
+                    }
+                });
             }
         });
 
-        CallbackSample.blockingCall(3000, new OnFinishListener() {
+        BlockingCallbackSample.blockingCall(3000, new CustomOnFinishListener() {
             @Override
-            public void onFinish() {
-                tvOutput.append("end2");
+            public void onFinish2() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        appendTextOnUiThread("End2");
+                    }
+                });
             }
         });
+
+    }
+
+    void appendTextOnUiThread(String str) {
+        tvOutput.append(str + "\n");
     }
 }
